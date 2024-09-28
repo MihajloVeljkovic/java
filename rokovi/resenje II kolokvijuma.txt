@@ -1,0 +1,84 @@
+import java.io.*;
+import java.util.ArrayList;
+
+public class Main {
+
+	public static void main(String[] args) throws IOException
+	{
+		FileReader fr = new FileReader("Datoteka.txt");
+		
+		BufferedReader br = new BufferedReader(fr);
+		
+		ArrayList<Student> studenti;
+		
+		String nazivPredmeta = String.valueOf(br.readLine());
+		
+		System.out.println(nazivPredmeta);
+		
+		
+		Integer brojStudenata = Integer.parseInt(br.readLine());
+		
+		System.out.println(brojStudenata);
+		
+		studenti = new ArrayList<Student>(brojStudenata);
+		
+		for(int i = 0; i < brojStudenata; i++) //ovo se ponavlja toliko puta
+		{
+		
+		String indPrezIme = String.valueOf(br.readLine());
+		
+		String[] nesto = indPrezIme.split(",");
+		
+		studenti.add(new Student(nesto[0], nesto[1], nesto[2])); //brojIndeksa, ime, prezime
+		
+		Integer brojOcena = Integer.parseInt(br.readLine());
+			for(int j = 0; j < 30;j++)
+			{
+				
+				if(j < brojOcena)
+				{
+					String brIOcena = String.valueOf(br.readLine());
+					String[] nestoDrugo = brIOcena.split(" ");
+					Integer brOcene = Integer.parseInt(nestoDrugo[0]);
+					Integer ocena = Integer.parseInt(nestoDrugo[1]);
+					studenti.get(i).niz_ocena[brOcene] = ocena;
+				}
+				else
+				{
+					studenti.get(i).niz_ocena[j] = 0;
+				}
+			}
+		}
+		
+		br.close();
+		
+		
+		FileOutputStream fos = new FileOutputStream("prosek.dat");
+		BufferedOutputStream bos = new BufferedOutputStream(fos);
+		
+		DataOutputStream dos = new DataOutputStream(bos);
+		
+		dos.writeChars(nazivPredmeta.toUpperCase());
+		
+		dos.writeChars("PREZIME IME BROJ_INDEKSA PROSEK");
+		
+		dos.writeChars("---- ----- ----- ------");
+		
+		String prezimeMaks = "";
+		Float prosek = (float) 0;
+		for(int i = 0; i < brojStudenata; i++)
+		{
+			dos.writeChars(studenti.get(i).prez_ime_indeks());
+			
+			if(studenti.get(i).prosek() > prosek)
+			{
+				prezimeMaks = studenti.get(i).prezime_studenta;
+				prosek = studenti.get(i).prosek();
+			}
+		}
+		
+		System.out.println(prezimeMaks);
+		dos.close();
+		
+	}
+}
